@@ -1,0 +1,10 @@
+# executable files
+*.exe
+
+#vs code settings files and folders
+/.vscode
+*.json
+
+# others
+*.log
+/bin
