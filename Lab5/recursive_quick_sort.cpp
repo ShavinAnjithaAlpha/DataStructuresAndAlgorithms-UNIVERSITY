@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 void quick_sort(int*, const int, const int); // function prototype
 void print_array(int*, const size_t); // function for print a array
 
@@ -48,8 +47,7 @@ void quick_sort(int arr[], const int start, const int end) {
     quick_sort(arr, i + 1, end);
 
 }
-
-
+// function for print the array
 void print_array(int arr[], const size_t size) {
 
     for (size_t i{0}; i < size; i++) {
