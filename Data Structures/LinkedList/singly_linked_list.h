@@ -35,7 +35,7 @@ public:
 
     // exlplicit constructor
     explicit LinkedList(const T& data) : size{1} {
-        head = tail = new Noe<T>(data);
+        head = tail = new Node<T>(data);
     }
 
     // destructors
@@ -45,7 +45,6 @@ public:
         while (current != nullptr) {
             temp = current;
             current = current->next;
-            std::cout << "delette item " << temp->value << endl;
             delete temp;
         }
 
@@ -57,7 +56,7 @@ public:
     void push_back(const T& data) {
 
         Node<T>* newNode{new Node<T>(data)};
-        if (head == tail == nullptr) {
+        if (head == nullptr) {
             head = tail = newNode;
         } else {
             tail->next = newNode;
@@ -68,7 +67,7 @@ public:
     // add new element to the front of the list
     void push_front(const T& data) {
 
-        if (head == tail == nullptr) {
+        if (head == nullptr) {
             head = tail = new Node<T>(data);
         } else {
             Node<T>* newNode{new Node<T>(data, head)};
@@ -85,7 +84,7 @@ public:
         }
 
         Node<T>* currentPtr{head};
-        for (int i{0}, i < position - 1; i++) {
+        for (int i{0}; i < position - 1; i++) {
             currentPtr = currentPtr->next;
         }
         
@@ -143,15 +142,15 @@ public:
 
         if (head == nullptr) return false;
 
-        if (head == tail && head->data == data) {
+        if (head == tail && head->value == data) {
             delete head;
             head = tail = nullptr;
             size--;
             return true;
         } else {
             Node<T>* currentPtr{head}, *prevPtr{head};
-            while (currentPtr.next != nullptr) {
-                if (currentPtr->data == data) {
+            while (currentPtr->next != nullptr) {
+                if (currentPtr->value == data) {
                     // delete the node
                     prevPtr->next = currentPtr->next;
                     if (currentPtr == tail) {
@@ -175,7 +174,7 @@ public:
     bool is_empty() const {
         return head == nullptr;
     }
-    bool size() const {
+    size_t length() const {
         return size;
     }
 
@@ -221,7 +220,7 @@ public:
 
 private:
     Node<T> *head, *tail;
-    size_t size;
+    size_t size = 0;
 
 };
 
