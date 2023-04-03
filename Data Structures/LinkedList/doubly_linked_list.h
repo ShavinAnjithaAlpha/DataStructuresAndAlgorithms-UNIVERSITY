@@ -1,0 +1,153 @@
+#include<iostream>
+#include<stdexcept>
+
+#ifndef DOUBLY_LINKED_LIST_H
+#define DOUBLY_LINKED_LIST_H
+
+
+template<typename T>
+class Node {
+public:
+
+    Node() : next{nullptr}, prev{nullptr} {
+        // empty constructor
+    }
+
+    explicit Node(const T& value, Node<T>* next = nullptr, Node<T>* prev = nullptr) : 
+        value{value}, next{next}, prev{prev} {
+            // empty body constructor
+        }
+
+    T value;
+    Node<T> *next, *prev; 
+};
+
+template<typename T>
+class DoubleLinkedList {
+public:
+    // default constructor;
+    DoubleLinkedList() : size{0}, head{0}, tail{0} {
+        // empty constcutor;
+    }
+
+    DoubleLinkedList(const T& value) : size{1} {
+        // set the value as the head and tail
+        head = tail = new Node<T>(value);
+    }
+
+    // destructor
+    ~DoubleLinkedList() {
+
+        Node<T>* currentPtr{head}, *temp{head};
+        while (currentPtr != nullptr) { // delete nodes one by one
+            temp = currentPtr;
+            currentPtr = currentPtr->next;
+            std::cout << "delete " << temp->value << endl;
+            delete temp;
+        }
+
+    }
+
+    // modyfying operations
+    void push_back(const T& data) {
+
+        if (head = nullptr) {
+            head = tail = new Node<T>(data);
+            return;
+        }
+
+        tail.next = new Node<T>(data, nullptr, tail);
+        size++;
+    }
+
+    void push_front(const T& data) {
+
+        if (head == nullptr) {
+            head = tail = new Node<T>(data);
+            return;
+        }
+
+        head.prev = new Node<T>(data, head, nullptr);
+        size++;
+    }
+
+    bool delete_back() {
+
+        if (head == nullptr) {
+            return false;
+        }
+
+        if (tail == head) { // if one element in the list
+            delete head;
+            head = tail = nullptr;
+        } else {
+            Node<T>* temp{tail.prev};
+            temp->next = nullptr; // set the pointers to null values
+            delete tail;
+            tail = temp; // set the new tail
+        }
+        size--;
+        return true;
+
+    }
+
+    bool delete_front() {
+
+        if (head == nullptr) {
+            return false;
+        }
+
+        if (head == tail) {
+            delete head;
+            head = tail = nullptr;
+        } else {
+            Node<T>* temp{head->next};
+            temp->prev = nullptr; // set the pointers to null values 
+            delete head;
+            head = temp; // set the new head
+        }
+        size--;
+        return true;
+
+    }
+
+    void insert(const T& data, const unsigned int position) {
+
+        if (position > size - 1) {
+            throw invalid_argument("cannot insert to the position " + position);
+        }
+
+        Node<T>* currentPtr{head};
+        for (unsigned int i{0}; i < position - 1; i++, currentPtr = currentPtr->next);
+        
+        if (position == 0) {
+            Node<T>* node = new Node<T>(data, head, nullptr);
+            head.prev = node;
+            head = node;
+        } else {
+            Node<T> *tmp{currentPtr->next};
+            currentPtr->next = new Node<T>(data, tmp, currentPtr); // insert the element to the new position
+            tmp->prev = currentPtr->next; // set the pointers
+        }
+        size++;
+
+    }
+
+    size_t length() const {
+        return size;
+    }
+
+    bool is_empty() const {
+        return head == nullptr;
+    }
+
+
+
+private:
+
+    size_t size = 0;
+    Node<T>* head, *tail;
+
+};
+
+#endif

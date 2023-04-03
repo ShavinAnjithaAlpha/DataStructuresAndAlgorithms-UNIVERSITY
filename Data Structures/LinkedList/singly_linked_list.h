@@ -25,6 +25,27 @@ public:
 
 template<typename T>
 class LinkedList {
+    // insert the list into output stream
+    friend std::ostream& operator<<(std::ostream& out, const LinkedList<T>& list) {
+
+        Node<T>* currentPtr{list.head};
+        for (; currentPtr != nullptr; currentPtr = currentPtr->next) {
+            out << currentPtr->value << " ";
+        }
+        out << std::endl;
+        return out;
+    }
+
+    // get one element from the input stream // work only for primary value types
+    friend std::istream& operator>>(std::istream& in, LinkedList<T>& list) {
+
+        T temp;
+        in >> temp;
+        list.push_back(temp);
+
+        return in;
+
+    }
 
 public:
     // constructors

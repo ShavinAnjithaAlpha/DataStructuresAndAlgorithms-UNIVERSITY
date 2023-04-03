@@ -18,7 +18,7 @@ int main() {
 
     // print the list
     cout << "list after inserting: \n";
-    list.print_list();
+    cout << list;
     cout << "size of the list: " << list.length() << endl;
 
     list.delete_back();
@@ -47,7 +47,10 @@ int main() {
     cout << "\nfrist item in the list is " << list[0] << endl;
 
 
+    cout << "enter e;ement to insert to an list >> ";
+    cin >> list;
 
+    cout << "list after inserting new value from input stream : " << list;
 
 
 
