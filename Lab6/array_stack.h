@@ -7,11 +7,17 @@
 template<typename T>
 class ArrayStack {
 public:
-
+    // one parameter constrcutor
     explicit ArrayStack(int capacity) : top{-1}, capacity{capacity} {
         arr = new T[capacity];
     }
 
+    // destructor
+    ~ArrayStack() {
+        delete[] arr;
+    }
+
+    // operations on stack
     void push(const T& data) {
         if (top >= capacity - 1) { // chec for stack overflow
             throw std::overflow_error("stack overflow error");
@@ -38,6 +44,7 @@ public:
         return top == -1;
     }
 
+    // access the stack top element
     T stack_top() const {
         if (is_empty()) {
             throw std::overflow_error("stack is empty");
@@ -48,7 +55,9 @@ public:
 
     void display() const {
 
-        for (size_t i{0}; i <= top; i++) {
+        if (top == -1) std::cout << "stack is empty";
+
+        for (int i{0}; i <= top; i++) {
             std::cout << arr[i] << " ";
         }
         std::cout << std::endl;

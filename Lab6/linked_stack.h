@@ -6,6 +6,7 @@
 
 template<typename T>
 class Node {
+
 public:
     Node(const T& data, Node<T>* prev = nullptr) : data{data}, prev{prev} {
         // empty constrctor
@@ -18,12 +19,24 @@ public:
 
 template<typename T>
 class LinkedStack {
-public:
 
-    LinkedStack() : top{nullptr} {
-        // empty constructor
+public:
+    // default constrcutor
+    LinkedStack() : top{nullptr} {}
+
+    // destructor
+    ~LinkedStack() {
+
+        Node<T>* currentPtr{top}, *prevPtr{top}; // declare the current and previous node
+        // delete node until find the null pointer
+        while (currentPtr != nullptr) {
+            prevPtr = currentPtr;
+            currentPtr = currentPtr->prev;
+            delete prevPtr;
+        }
     }
 
+    // operatons on stack
     void push(const T& data) {
 
         if (is_empty()) {
