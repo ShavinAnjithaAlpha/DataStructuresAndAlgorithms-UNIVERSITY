@@ -6,14 +6,14 @@ using namespace std;
 int main() {
 
     BinarySearchTree<int> tree;
+    tree.insert(10);
     tree.insert(4);
-    tree.insert(5);
-    tree.insert(6);
-    tree.insert(7);
     tree.insert(8);
     tree.insert(9);
-    tree.insert(10);
     tree.insert(11);
+    tree.insert(3);
+    tree.insert(5);
+    tree.insert(7);
     
 
     cout << "inorder traversal of tree: ";
@@ -48,7 +48,14 @@ int main() {
     tree.inorder_traversal(tree.getRoot());
     cout << endl;
 
+    cout << "\nBredth first traversal : ";
+    tree.breadthFirst();
 
+    cout << "\nIterative pre order traversal : ";
+    tree.itertaive_preorder_traversal();
+
+    cout << "\nIterative post order traversal : ";
+    tree.iterative_postorder_traversal();
 
 
 }

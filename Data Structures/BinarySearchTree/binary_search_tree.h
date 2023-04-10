@@ -1,5 +1,7 @@
 #include<iostream>
 #include<stdexcept>
+#include<queue>
+#include<stack>
 
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
@@ -88,18 +90,6 @@ public:
 
     }
 
-    void replant(TreeNode<T>* current, TreeNode<T>* parent, TreeNode<T>* child) {
-
-        if (parent == nullptr) {
-            root = child;
-        } else if (current == parent->left) {
-            parent->left = child;
-        } else {
-            parent->right = child;
-        }
-        delete current;
-    }
-
     // delete operation
     bool delete_node(const T& data) {
 
@@ -139,7 +129,7 @@ public:
                 if (succ == currentNode->right) {
                     currentNode->data = succ->data; // replace the successor and current
                     currentNode->right = succ->right;
-                    delete currentNode;
+                    delete succ;
                 } else {
                     T temp = succ->data;
                     replant(succ, succParent, succ->right);
@@ -156,18 +146,6 @@ public:
     const TreeNode<T>* const recursive_search(const T& data) const {
 
         return recursive_search_helper(data, root);
-
-    }
-
-    const TreeNode<T>* const recursive_search_helper(const T& data, TreeNode<T>* node) const {
-
-        if (node == nullptr || node->data == data) 
-            return node;
-        else if (node->data < data) {
-            return recursive_search_helper(data, node->right);
-        } else {
-            return recursive_search_helper(data, node->left);
-        }
 
     }
 
@@ -240,6 +218,72 @@ public:
         }
     }
 
+    void itertaive_preorder_traversal() const {
+
+        if (root != nullptr) {
+            std::stack<TreeNode<T>*> travStack;
+            travStack.push(root);
+
+            while (!travStack.empty()) {
+                TreeNode<T>* node = travStack.top();
+                travStack.pop();
+                std::cout << node->data << " ";
+
+                if (node->right != nullptr) travStack.push(node->right);
+                if (node->left != nullptr) travStack.push(node->left);
+            }
+            std::cout << std::endl;
+        }
+
+    }
+
+    void iterative_postorder_traversal() const {
+
+        if (root != nullptr) {
+            std::stack<TreeNode<T>*> runtimeStack;
+            std::stack<TreeNode<T>*> reverseStack;
+
+            runtimeStack.push(root);
+            while (!runtimeStack.empty()) {
+                TreeNode<T>* node = runtimeStack.top();
+                reverseStack.push(node);
+                runtimeStack.pop();
+
+                if (node->left != nullptr) runtimeStack.push(node->left);
+                if (node->right != nullptr) runtimeStack.push(node->right);
+            }
+
+            // print the reverse stack until stack is empty
+            while (!reverseStack.empty()) {
+                std::cout << reverseStack.top()->data << " ";
+                reverseStack.pop();
+            }
+            std::cout << std::endl;
+        }
+
+    }
+
+    void breadthFirst() const {
+
+        std::queue<TreeNode<T>*> queue;
+        if (root != nullptr) {
+            queue.push(root);
+            while (!queue.empty()) 
+            {
+                // take the value from the queue first element
+                TreeNode<T>* temp = queue.front();
+                queue.pop();
+                // add the left and right nodes to the queue
+                if (temp->left != nullptr) queue.push(temp->left);
+                if (temp->right != nullptr) queue.push(temp->right);
+                std::cout << temp->data << " ";
+            }
+            std::cout << std::endl;
+            
+        }
+
+    }
+
     const TreeNode<T>* const getRoot() const {
         return root;
     }
@@ -249,6 +293,32 @@ public:
     }
 
 private:
+    // helper method for recursive search
+    const TreeNode<T>* const recursive_search_helper(const T& data, TreeNode<T>* node) const {
+
+        if (node == nullptr || node->data == data) 
+            return node;
+        else if (node->data < data) {
+            return recursive_search_helper(data, node->right);
+        } else {
+            return recursive_search_helper(data, node->left);
+        }
+
+    }
+    // rebraching the tree
+    void replant(TreeNode<T>* current, TreeNode<T>* parent, TreeNode<T>* child) {
+
+        if (parent == nullptr) {
+            root = child;
+        } else if (current == parent->left) {
+            parent->left = child;
+        } else {
+            parent->right = child;
+        }
+        delete current;
+    }
+
+
     TreeNode<T>* root;
 
 };
