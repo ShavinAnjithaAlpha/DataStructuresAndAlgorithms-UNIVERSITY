@@ -37,6 +37,10 @@ public:
         return top == capacity - 1;
     }
 
+    void clear() {
+        top = -1;
+    }
+
     size_t size() const {
         return top + 1;
     }
@@ -79,7 +83,7 @@ public:
     }
 
     Node(const T& data, Node<T>* next = nullptr) : data{data}, next{next} {
-        // mepty body
+        // empty body
     }
 
     T data;
@@ -124,6 +128,7 @@ public:
     void push(const T& data) {
         Node<T>* node{new Node<T>(data, top)};
         top = node;
+        size++;
     }
 
     T& top_el() const {
@@ -140,13 +145,31 @@ public:
         T data = temp->data;
         top = top->next;
         delete temp;
+        size--;
 
         return data;
 
     }
 
+    void clear() {
+
+        Node<T> *current{top}, *prev{nullptr};
+        while (current != nullptr) {
+            prev = current;
+            current = current->next;
+            delete prev;
+        }
+
+        size = 0;
+
+    }
+
     bool empty() const {
         return top == nullptr;
+    }
+
+    size_t length() const {
+        return size;
     }
 
 private:
