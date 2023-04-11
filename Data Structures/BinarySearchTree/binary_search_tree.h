@@ -32,6 +32,13 @@ public:
         root = new TreeNode<T>(data);
     }
 
+    // destrcutor
+    ~BinarySearchTree() {
+        // call to the recursive deletet method
+        deleteNodes(root);
+
+    }
+
     // insert operation
     void insert(const T& data) {
         
@@ -316,6 +323,17 @@ private:
             parent->right = child;
         }
         delete current;
+    }
+
+    // destructor helper
+    void deleteNodes(TreeNode<T>* node) {
+
+        if (node != nullptr) {
+            deleteNodes(node->left);
+            deleteNodes(node->right);
+            delete node;
+        }
+
     }
 
 
