@@ -144,7 +144,7 @@ public:
         
         if (position == 0) {
             Node<T>* node = new Node<T>(data, head, nullptr);
-            head.prev = node;
+            head->prev = node;
             head = node;
         } else {
             Node<T> *tmp{currentPtr->next};
@@ -194,6 +194,18 @@ public:
     T& operator[](unsigned int index) {
         
         if (index > size - 1) { // throw exception if index is not valid
+            throw std::invalid_argument("list index out of bound exception");
+        }
+
+        Node<T>* currentPtr{head};
+        for (unsigned int i{0}; i < index; i++, currentPtr = currentPtr->next); // traverse until find the correct index
+        return currentPtr->value;
+
+    }
+
+    T operator [](unsigned int index) const {
+
+        if (index > size - 1) {
             throw std::invalid_argument("list index out of bound exception");
         }
 

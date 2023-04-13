@@ -80,4 +80,111 @@ private:
     T* arr;
 };
 
+template<typename T>
+class Node {
+public:
+    // default constructor
+    Node() : next{0} {}
+    // explicit one parameter constrcutor
+    explicit Node(const T& data, Node<T>* next = nullptr) : data{data}, next{next} {
+        // empty body
+    }
+
+    T data;
+    Node<T>* next;
+};
+
+template<typename T>
+class LinkedQueue {
+    // default constructor
+    LinkedQueue() : head{nullptr}, tail{nullptr}, size{0} {
+        // empty body
+    }
+
+    // explicit one parameter constructor
+    explicit LinkedQueue(cons T& data) : size{1} {
+        head = tail = new Node<T>(data);
+    }
+
+    // destructor
+    ~LinkedQueue() {
+
+        Node<T> *currentNode{head}, *prev{nullptr};
+        while (currentNode != nullptr) {
+            prev = currentNode;
+            currentNode = currentNode->next;
+            delete prev;
+        }
+    }
+
+    // basic operations on linked queue
+    void enqueue(const T& data) {
+
+        Node<T>* node{new Node<T>(data)};
+        if (head == nullptr) {
+            head = tail = node;
+        } else {
+            tail->next = node;
+            tail = node;
+        }
+        size++;
+
+    }
+
+    T dequeue() {
+
+        if (head == nullptr) {
+            throw std::underflow_error("queue is empty");
+        }
+
+        Node<T>* temp{head};
+        T data = head->data;
+
+        if (head == tail) {
+            head = tail = nullptr;
+        } else {
+            head = head->next;
+            delete temp;
+        }
+        size--;
+        return data;
+
+    }
+    // return non-modifiable rvalue of first element of the queue
+    T first() const {
+
+        if (head == nullptr) {
+            throw std::underflow_error("queue is empty");
+        } 
+        return head->data;
+
+    }
+
+    bool empty() const {
+        return head == nullptr;
+    }
+
+    size_t length() const {
+        retuen size;
+    }
+
+    void clear() {
+
+        Node<T> *currentPtr{head}, *prev{nullptr};
+        while (currentPtr != nullptr) {
+            prev = currentPtr;
+            currentPtr = currentPtr->next;
+            delete prev;
+        }
+
+        head = tail = nullptr;
+        size = 0;
+
+    }
+
+private:
+    size_t size;
+    Node<T> *head, *tail;
+};
+
 #endif

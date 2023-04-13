@@ -47,6 +47,9 @@ int main() {
 
     cout << "list after inserting new value from input stream : " << list;
 
+    list.insert(999, 1);
+    cout << "list after insert an 99 into index 1 : " << list;
+
 
 
 }
