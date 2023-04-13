@@ -46,11 +46,11 @@ class DoubleLinkedList {
 
 public:
     // default constructor;
-    DoubleLinkedList() : size{0}, head{0}, tail{0} {
+    DoubleLinkedList() : size{0}, head{nullptr}, tail{nullptr} {
         // empty constcutor;
     }
 
-    DoubleLinkedList(const T& value) : size{1} {
+    explicit DoubleLinkedList(const T& value) : size{1} {
         // set the value as the head and tail
         head = tail = new Node<T>(value);
     }
@@ -62,7 +62,6 @@ public:
         while (currentPtr != nullptr) { // delete nodes one by one
             temp = currentPtr;
             currentPtr = currentPtr->next;
-            std::cout << "delete " << temp->value << std::endl;
             delete temp;
         }
 
@@ -71,7 +70,7 @@ public:
     // modyfying operations
     void push_back(const T& data) {
         
-        if (head = nullptr) {
+        if (head == nullptr) {
             head = tail = new Node<T>(data);
         } else {
             Node<T>* node = new Node<T>(data, nullptr, tail);

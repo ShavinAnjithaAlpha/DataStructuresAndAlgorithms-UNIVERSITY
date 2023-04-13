@@ -8,7 +8,7 @@ int main() {
 
     DoubleLinkedList<int> list;
     // add some values to the list
-    list.push_back(1);
+    list.push_back(111);
     list.push_back(2);
     list.push_front(3);
     list.push_front(4);
@@ -17,8 +17,7 @@ int main() {
     // cout << "search for item value 2 : " << list.search(3) << endl;
 
     // print the list
-    cout << "list after inserting: ";
-    list.print_list();
+    cout << "list after inserting: " << list;
     cout << "size of the list: " << list.length() << endl;
 
     list.delete_back();
