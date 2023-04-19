@@ -96,13 +96,28 @@ public:
 
 template<typename T>
 class LinkedQueue {
+
+    friend std::ostream& operator <<(std::ostream& out, const LinkedQueue& queue) {
+
+        Node<T>* currentPtr{queue.head};
+        while (currentPtr != nullptr) {
+            out << currentPtr->data << " "; 
+            currentPtr = currentPtr->next;
+        }
+        out << std::endl;
+
+        return out;
+
+    }
+
+public:
     // default constructor
     LinkedQueue() : head{nullptr}, tail{nullptr}, size{0} {
         // empty body
     }
 
     // explicit one parameter constructor
-    explicit LinkedQueue(cons T& data) : size{1} {
+    explicit LinkedQueue(const T& data) : size{1} {
         head = tail = new Node<T>(data);
     }
 
@@ -165,7 +180,7 @@ class LinkedQueue {
     }
 
     size_t length() const {
-        retuen size;
+        return size;
     }
 
     void clear() {

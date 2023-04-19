@@ -25,6 +25,20 @@ int main() {
 
     cout << "queue after enquq and dequq : " << queue;
 
+    cout << "\nTest for Linked Queue : " << endl;
+    // create linked queue
+    LinkedQueue<int> linked_queue;
+    linked_queue.enqueue(4);
+    linked_queue.enqueue(7);
+    linked_queue.enqueue(1);
+
+    cout << "linked queue after some insertion : " << linked_queue;
+    cout << "top of the queue : " << linked_queue.first() << endl;
+    linked_queue.dequeue();
+    linked_queue.dequeue();
+
+    cout << "linked queue after some dequeues : " << linked_queue;
+
 
 
 
