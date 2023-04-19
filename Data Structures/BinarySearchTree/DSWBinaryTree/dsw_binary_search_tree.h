@@ -1,4 +1,5 @@
 #include<iostream>
+#include<cmath>
 
 #ifndef DSW_BST_TREE_H
 #define DSW_BST_TREE_H
@@ -41,14 +42,108 @@ public:
         } else {
             insertHelper(root, data);
         }
+        size++;
     }
 
     void inorderTraversal() const {
         inorderTraversalHelper(root);
+        std::cout << std::endl;
     }
 
+    void preorderTraversal() const {
+        preorderTraversalHelper(root);
+        std::cout << std::endl;
+    }
+
+    void balance() {
+        // first make the backbone
+        make_backbone();
+        // get the perfect nodes count
+        int perfect_node_count = perfect_count();
+        int extra = static_cast<int>(size) - perfect_node_count;
+
+        // left rotate series for extra nodes
+        Node<T> *tmp{root}, *gr{nullptr};
+        for (int i{0}; i < extra; i++) {
+            gr = left_rotate(tmp, tmp->right, gr);
+            tmp = gr->right;
+        }
+
+        // left rotate series for perfect nodes
+        int x = perfect_node_count / 2;
+        while (x > 0) {
+            tmp = root, gr = nullptr;
+            for (int i{0}; i < x; i++) {
+                gr = left_rotate(tmp, tmp->right, gr);
+                tmp = gr->right;
+            }
+            x /= 2;
+        }
+
+
+    }
 
 private:
+
+    // method for count the
+    int perfect_count() const {
+
+        int perfect_count{0}, i{0};
+        while (perfect_count < size) {
+            i++;
+            perfect_count = std::pow(2, i) - 1;
+        }
+
+        return std::pow(2, i - 1) - 1;
+
+    }
+
+    // method for make the backbone of the tree
+    void make_backbone() {
+
+        Node<T> *tmp{root}, *gr{nullptr};
+        while (tmp != nullptr) {
+            if (tmp->left == nullptr) {
+                gr = tmp;
+                tmp = tmp->right;
+            }
+            else {
+                tmp = right_rotate(tmp, tmp->left, gr);
+            }
+        }
+
+    }
+
+    // create left rotations and right rotations
+    Node<T>* left_rotate(Node<T>* parent, Node<T>* child, Node<T>* grand) {
+        if (root == parent) {
+            root = child; // set the new root
+        } else {
+            if (grand->left == parent) grand->left = child;
+            else grand->right = child;
+        }
+
+        Node<T>* temp{child->left};
+        child->left = parent;
+        parent->right = temp;
+
+        return child;
+    }
+
+    Node<T>* right_rotate(Node<T>* parent, Node<T>* child, Node<T>* grand) {
+        if (parent == root) {
+            root = child; // set the new root
+        } else {
+            if (grand->left == parent) grand->left = child;
+            else grand->right = child;
+        }
+
+        Node<T>* temp{child->right};
+        child->right = parent;
+        parent->left = temp;
+
+        return child;
+    }
 
     // helper methods
     void destructorHelper(Node<T>* node) {
@@ -63,6 +158,15 @@ private:
         destructorHelper(left);
         destructorHelper(right);
 
+    }
+
+    void preorderTraversalHelper(Node<T>* node) const {
+
+        if (node == nullptr) return;
+
+        std::cout << node->data << " ";
+        preorderTraversalHelper(node->left);
+        preorderTraversalHelper(node->right);
     }
 
     void inorderTraversalHelper(Node<T>* node) const {
