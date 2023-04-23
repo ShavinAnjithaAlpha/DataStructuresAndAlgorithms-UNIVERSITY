@@ -22,4 +22,7 @@ int main() {
 
     cout << "list aftre deletion from front and back : " << list;
 
+    list.delete_element(5);
+    cout << "list after delete 5 : " << list;
+
 }

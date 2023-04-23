@@ -147,6 +147,45 @@ public:
         return data;
     }
 
+    bool delete_element(const T& data) {
+
+        if (head == nullptr) return false;
+        else if (head->next == head) {
+            if (head->data == data) {
+                delete head;
+                head = nullptr;
+                return true;
+            } else return false;
+        } else {
+            if (head->prev->data == data) {
+                // remove the last items
+                Node<T>* deletedNode{head->prev};
+                head->prev = head->prev->prev;
+                head->prev->next = head;
+                delete deletedNode;
+                return true;
+            }
+
+            Node<T>* currentNode{head};
+            while (currentNode != head->prev) {
+                if (currentNode->data == data) {
+                    currentNode->prev->next = currentNode->next;
+                    currentNode->next->prev = currentNode->prev;
+                    if (currentNode == head) {
+                        head = currentNode->next;
+                    }
+                    delete currentNode;
+                    return true;
+                }
+                // go to the next node
+                currentNode = currentNode->next;
+            }
+            
+        }
+        return false;
+
+    }
+
     // querying methods
     T operator [](unsigned int index) const {
         
