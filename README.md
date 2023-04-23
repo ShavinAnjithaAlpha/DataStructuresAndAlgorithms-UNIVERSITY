@@ -20,7 +20,7 @@
 - [x] Linked List
   - [x] Singly Linked List
   - [x] Doubly Linked List
-  - [ ] Circular Linked List
+  - [x] Circular Linked List
 - [x] Stack
 - [x] Queue
 - [ ] Binary Tree
