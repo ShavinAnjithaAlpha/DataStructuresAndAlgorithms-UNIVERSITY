@@ -23,50 +23,58 @@ public:
 template<typename T>
 class CircularLinkedList {
 
-    friend std::ostream& operator <<(std::ostream& out, const CircularLinkedList& list) const {
+    friend std::ostream& operator <<(std::ostream& out, const CircularLinkedList& list) {
 
-        Node<T>* currentNode{list->head};
-        while (currentNode != nullptr) {
+        Node<T>* currentNode{list.head};
+        out << currentNode->data << " "; currentNode = currentNode->next;
+        while (currentNode != list.head) {
             out << currentNode->data << " "; 
+            currentNode = currentNode->next;
         }
-        std::cout << std::endl;
-
+        out << std::endl;
+        return out;
     }
 
 public:
     CircularLinkedList() : size{0}, head{nullptr} {} // default constructor
     // explicit constructor
     explicit CircularLinkedList(const T& data) : head{new Node<T>(data)}, size{1} {
-        // empty body
+        head->next = head;
+        head->prev = head;
     }
     // destructor
     ~CircularLinkedList() {
 
-        Node<T> *currentPtr{head}, *prev{nullptr};
-        while (currentPtr != nullptr) {
-            prev = currentPtr;
-            currentPtr = currentPtr->next;
-            delete prev;
+        if (head != nullptr) {
+            if (size == 1) {
+                delete head;
+            } else {
 
-            std::cout << "delete " << prev->data << std::endl;
+                Node<T> *currentNode{head->next}, *prev{nullptr};
+                while (currentNode != head) {
+                    prev = currentNode;
+                    currentNode = currentNode->next;
+                    delete prev;
+                }
+                delete head;
+            }
         }
     }
 
     // modifying methods
     void push_back(const T& data) {
 
-        if (head == nullptr) head = new Node<T>(data);
+        if (head == nullptr) {
+            head = new Node<T>(data);
+            head->next = head;
+            head->prev = head;
+        }
         else {
 
-            if (size == 1) {
-                head->next = new Node<T>(data, head, head);
-                head->prev = head->next;
-            } else {
-                // get the list tail by heda->prev
-                Node<T>* tailNode{head->prev};
-                tailNode->next = new Node<T>(data, tailNode, head);
-                head->prev = tailNode->next;
-            }
+            // get the list tail by heda->prev
+            Node<T>* tailNode{head->prev};
+            tailNode->next = new Node<T>(data, tailNode, head);
+            head->prev = tailNode->next;
 
         }
         size++;
@@ -75,20 +83,18 @@ public:
 
     void push_front(const T& data) {
 
-        if (head == nullptr) head = new Node<T>(data);
+        if (head == nullptr) {
+             head = new Node<T>(data);
+             head->prev = head;
+             head->next = head;
+        }
         else {
 
-            if (size == 1) {
-                head->prev = new Node<T>(data, head, head);
-                head->next = head->prev;
-                head = head->prev;
-            } else {
-                Node<T>* newNode = new Node<T>(data, head->prev, head); // create a new node
-                Node<T>* tailNode = head->prev; // fetch the tail
-                head->prev = newNode; // set the new pointers
-                tailNode->next = newNode;
-                head = newNode;
-            }
+            Node<T>* newNode = new Node<T>(data, head->prev, head); // create a new node
+            Node<T>* tailNode = head->prev; // fetch the tail
+            head->prev = newNode; // set the new pointers
+            tailNode->next = newNode;
+            head = newNode;
 
         }
         size++;
