@@ -10,58 +10,38 @@ struct node {
 void traverseInOrder(struct node *root) {
 
     if (root != nullptr) {
-        traverseInOrder(root->left);
-        cout << root->key << " ";
-        traverseInOrder(root->right);
+        traverseInOrder(root->left); // goto the left sub tree recursively
+        cout << root->key << " "; // print the node value
+        traverseInOrder(root->right); // go to the right sub tree recursively
     }
 
 }
 
 // Insert a node
 struct node *insertNode(struct node *node, int key) {
-    // cout << "enter";
+    
     if (node == nullptr) {
-        node = new struct node;
-        node->key = key;
-        return node;
+      // set the leaf and root node;
+      struct node *newNode = new struct node();
+      newNode->key = key;
+      return newNode;
     }
-    // cout << "root pass";
+
+    // insert nodes to the left or right recursively based on current node's key value
     if (key > node->key) {
-        // insert the new node recursively based on the existance of the right
-        if (node->right != nullptr) 
-            return insertNode(node->right, key);
-        else {
-            // struct node *newNode;
-            // *newNode = {.key = key, .left = nullptr, .right = nullptr};
-            node->right = new struct node;
-            node->right->key = key;
-            cout << "insert " << key << endl;
-            return node;
-        }
+        node->right = insertNode(node->right, key);
     } else {
-        cout << "left";
-        // insert the new node recursively based on the existance of the left
-        if (node->left != nullptr) 
-            return insertNode(node->left, key);
-        else {
-            cout << "else";
-            // struct node *newNode;
-            // *newNode = {.key = key, .left = nullptr, .right = nullptr};
-            node->left = new struct node;
-            node->left->key = key;
-            cout << "insert " << key << endl;
-            return node;
-        }
+        node->left = insertNode(node->left, key);
     }
 
     return node;
 
-
 }
 
-// rebraching the tree
+// rebranching the tree
 void replant(struct node* root, struct node* current, struct node* parent, struct node* child) {
 
+    // restructured the tree branch
     if (parent == nullptr) {
         root = child;
     } else if (current == parent->left) {
@@ -88,7 +68,7 @@ struct node *deleteNode(struct node *root, int key) {
 
     }
 
-    // check whether there are key to be deleted
+    // check whether there is a key to be deleted
     if (currentNode != nullptr) {
 
         if (currentNode->left == nullptr && currentNode->right == nullptr) {
