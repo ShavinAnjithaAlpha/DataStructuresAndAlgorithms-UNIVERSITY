@@ -46,9 +46,9 @@ public:
             throw std::underflow_error("queue is empty");
 
         T max = arr[0]; // store the maximum value of the array
-        arr[0] = arr[heap_size - 1] // fill the root with last element of the heap
+        arr[0] = arr[heap_size - 1]; // fill the root with last element of the heap
         heap_size--; // reduce the heap size by one;
-        max_heapify(1) // heapify the root for restructured the max heap
+        max_heapify(1); // heapify the root for restructured the max heap
         return max;
 
     }
@@ -77,7 +77,7 @@ public:
         // increase the heap size
         heap_size++;
         arr[heap_size - 1] = key;
-        int i{heap_size};
+        size_t i{heap_size};
         while (i > 1 && arr[PARENT(i) - 1] < arr[i - 1]) {
             // swap the values
             int temp{arr[i - 1]};
@@ -104,7 +104,7 @@ private:
         // calculating the left, right indexes
         int left = LEFT(i), right = RIGHT(i), largest;
         // check for left sub element
-        if (left <= heap_size && arrr[left - 1] > arr[i - 1]) {
+        if (left <= heap_size && arr[left - 1] > arr[i - 1]) {
             largest = left;
         } else {
             largest = i;
@@ -128,9 +128,9 @@ private:
     }
 
     // queue attributes
-    T* arr;
     size_t length;
     size_t heap_size{0};
+    T* arr;
 };
 
 #endif
