@@ -1,5 +1,6 @@
 #include<iostream>
 #include<stdexcept>
+#include<stdarg.h>
 
 #ifndef MAX_HEAP_H
 #define MAX_HEAP_H
@@ -20,15 +21,31 @@ inline int parent(int i) {
 template<typename T>
 class MaxHeap {
 
+    friend std::ostream& operator << (std::ostream& out, const MaxHeap<T>& heap) {
+
+        T* arr = heap.arr;
+        for (size_t i{0}; i < heap.size; i++) {
+            out << arr[i] << " ";
+        }
+        out << std::endl;
+        return out;
+    }
+
+public:
     // default constructor
     MaxHeap() : length{127}, arr{new T[length]} {
         // empty constructor
     }
     // explicit one parameter constructor (array length)
-    explicit MaxHeap(const T* i, ...) : arr{i} {
-        length = sizeof(arr) / sizeof(T);
-        size = length;
-
+    explicit MaxHeap(const size_t l, ...) : size{l}, length{l} {
+        va_list args;
+        va_start(args, size);
+        // ccreate new dynamic array
+        arr = new T[size];
+        for (unsigned int i{0}; i < size; i++) {
+            arr[i] = va_arg(args, T);
+        }
+        va_end(args); // cleanup the argument list
     }
 
     // destructor
@@ -51,13 +68,13 @@ class MaxHeap {
         
         size_t heap_size{size};
 
-        build_max_heap() // build the max heap 
+        build_max_heap(); // build the max heap 
         // now maximum value at the root of the array
-        for (int i{size}; i > 1; i--) {
+        for (size_t i{size}; i > 1; i--) {
             // swap the values at the i and last index of heap
             int temp{*(arr + i - 1)};
-            *(arr + i - 1) = *(arr + size - 1);
-            *(arr + size - 1) = temp;
+            *(arr + i - 1) = *(arr);
+            *(arr) = temp;
             // decrement the heap size by one
             size--;
             max_heapify(1); // max heapify the heap at root
@@ -75,7 +92,7 @@ private:
     void max_heapify(int i) {
 
         // get the left and right sub trees
-        int l = left(i), r = right(i), int largest;
+        int l = left(i), r = right(i), largest;
         // check whether there is left sub tree and determine the largest value
         if (l <= heap_size() && arr[l - 1] > arr[i - 1]) {
             largest = l;
@@ -83,7 +100,7 @@ private:
             largest = i;
         }
         // check whether there is a right sub tree and determine the largest value
-        if (r <= heap_size() && arr[r - 1] > largest) {
+        if (r <= heap_size() && arr[r - 1] > arr[largest - 1]) {
             largest = r;
         }
 
