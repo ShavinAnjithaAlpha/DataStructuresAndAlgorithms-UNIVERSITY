@@ -26,18 +26,18 @@ void heapify(int arr[], int n, int root)
       largest = root;
    }
 
-   // check whether right index exist in the hepa and its value is larger than the largest value
+   // check whether right index exist in the heap and its value is larger than the largest value
    if (right <= n && arr[largest - 1] < arr[right - 1]) {
       largest = right;
    }
 
-   // swap the largest and root values id the root is different fromt he largest
+   // swap the largest and root values if the root is different from the largest
    if (root != largest) {
       // swap the values
       int tmp{*(arr + largest - 1)};
       *(arr + largest - 1) = *(arr + root - 1);
       *(arr + root - 1) = tmp;
-      // recursively call to the heapify to heapify the sub tree which changed
+      // recursively call to the heapify method to heapify the sub tree which is changed
       heapify(arr, n, largest);
    }
    
