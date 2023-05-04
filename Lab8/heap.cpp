@@ -85,6 +85,7 @@ int main()
    for (int i{0}; i < n; i++) {
       cin >> heap_arr[i];
    }
+   cout << endl;
 
    // int heap_arr[] = {4,17,3,12,9,6};
    // int n = sizeof(heap_arr)/sizeof(heap_arr[0]);
