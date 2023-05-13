@@ -147,6 +147,31 @@ public:
 
     }
 
+
+    Node<T> search(const T& data) const {
+        // search for the given data and return the unmodifieable lvalue
+        Node<T> *currentNode{first};
+        for (; currentNode != nullptr; currentNode = currentNode->next);
+
+        if (currentNode == nullptr) {
+            throw std::invalid_argument("no item in the list");
+        }
+        return *currentNode;
+
+    }
+
+    Node<T>& search(const T& data) {    
+        // search for the given data and return modifieable lvalue
+        Node<T> *currentNode{first};
+        for (; currentNode != nullptr; currentNode = currentNode->next);
+
+        if (currentNode == nullptr) {
+            throw std::invalid_argument("no item in the list");
+        }
+        return *currentNode;
+
+    }
+
 private:
     Node<T> *first, *last;
     size_t length;
