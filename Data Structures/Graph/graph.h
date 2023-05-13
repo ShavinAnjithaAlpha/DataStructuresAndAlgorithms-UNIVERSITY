@@ -10,22 +10,12 @@
 typedef LinkedList<int>::iterator iterator;
 
 template<typename T>
-struct Vertex {
-    // structure for store the vertex actual data and addtional data needed by the graph algorithms
-    T data;
-    // addiotional fields for implement the traversal algorithms
-    char color; // color to identify the nodes whether nodes are discovered, reached out or finished
-    int distance;   // distance from the source vertex;
-    Vertex<T> *parent; // parent vertex pointer which adjacent to the current vertex
-};
-
-template<typename T>
 class GraphType {
 
     friend std::ostream& operator<<(std::ostream& out, const GraphType<T>& graph) {
 
         for (int i{0}; i < graph.g_size; i++) {
-            out << i << "(" << graph.vertices[i].data << ") -> ";
+            out << i << "(" << graph.vertices[i] << ") -> ";
             out << graph.adjacencyLists[i];
         }
         return out;
@@ -34,12 +24,12 @@ class GraphType {
 public:
     // constructors
     GraphType() 
-        : max_size{50}, g_size{0}, vertices{new Vertex<T>[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
+        : max_size{50}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
             // empty list
         }
 
     explicit GraphType(size_t max_size) 
-        : max_size{max_size}, g_size{0}, vertices{new Vertex<T>[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
+        : max_size{max_size}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
             // empty body
         }
 
@@ -73,7 +63,7 @@ public:
         return adjacencyLists[adj_index];
     }
 
-    const Vertex<T>* get_vertices() const {
+    const T* get_vertices() const {
         return vertices;
     }
 
@@ -100,7 +90,7 @@ public:
             infile >> vertex;
             infile >> adjacencyVertexIndex;
 
-            vertices[i] = {vertex};
+            vertices[i] = vertex;
             while (adjacencyVertexIndex != -1) {
 
                 adjacencyLists[i].insert_last(adjacencyVertexIndex);
@@ -113,67 +103,122 @@ public:
 
     }
 
-    // traversal algorithms for graphs
-    void BFS(const T& source) {
-        int source_index = find_index(source);
-        // mark all the vertex as white, distance as zero and parent to null 
-        for (int i{0}; i < g_size; i++) {
-            vertices[i].color = 'w'; // indicate that this vertex is not yet discovered
-            vertices[i].distance = -1; // indicate that distance from the source is not set
-            vertices[i].parent = nullptr;
-        }
-        vertices[source_index].color = 'g';
-        vertices[source_index].distance = 0;
-        std::queue<int> queue;
-        queue.push(source_index);
-        // run the while loop until queue is empty
-        while (!queue.empty()) {
-            int vertex_index = queue.front();
-            queue.pop();
-            for (iterator iter = adjacencyLists[vertex_index].begin(); iter != adjacencyLists[vertex_index].end(); ++iter) {
-                if (vertices[*iter].color == 'w') {
-                    vertices[*iter].color = 'g';
-                    vertices[*iter].distance = vertices[vertex_index].distance + 1;
-                    vertices[*iter].parent = (vertices + vertex_index);
-                    // enquee into the queue
-                    queue.push(*iter);
-                }
-            }
-            // mark the vertex as finished
-            vertices[vertex_index].color = 'b';
-        }
-    }
-
-    void bfs_result() const {
-
-        std::cout << std::left << std::setw(10) << "Index" << std::setw(15) << "Vertex"
-                << std::setw(10) << "Distance" << std::endl;
-        for (int i{0}; i < g_size; i++) {
-            std::cout << std::left << std::setw(10) << i << std::setw(15) << vertices[i].data
-                    << std::setw(10) << vertices[i].distance << std::endl;
-        }
-
-    }
-
-private:
-
     // helper function for find the index of the given vertex data
     int find_index(const T& data) const {
         for (int i{0}; i < g_size; i++) {
-            if (vertices[i].data == data) {
+            if (vertices[i] == data) {
                 return i;
             }
         }
         return -1; // indicate that the given data is not found
     }
 
+private:
+
 protected:
     size_t max_size;    // maximum number of nodes graph hold
     size_t g_size; // current graph size - number of current nodes
-    Vertex<T> *vertices; // vertices data array
+    T *vertices; // vertices data array
     LinkedList<int>* adjacencyLists;  // array of adjacancy list of arrays
 
 };
+
+// wrapper class for implement the BFS traversal on top of the graph
+template<typename T>
+class Wr_BFS {
+public:
+    // there is no default constructor for this class
+    Wr_BFS() = delete;
+    // explicit one argument constructor
+    explicit Wr_BFS(GraphType<T>& graph) : graph(graph), bfs_set{new BFSData[graph.size()]} {
+        // fill the BFS data with deafult values
+        for (int i{0}; i < graph.size(); i++) {
+            bfs_set[i] = {'w', -1, -1};
+        }
+    }
+
+    // BFS traversal algorithm
+    // traversal algorithms for graphs
+    void BFS(const T& source) {
+        int source_index = graph.find_index(source);
+        
+        bfs_set[source_index].color = 'g';
+        bfs_set[source_index].distance = 0;
+        std::queue<int> queue;
+        queue.push(source_index);
+        // run the while loop until queue is empty
+        while (!queue.empty()) {
+            int vertex_index = queue.front();
+            queue.pop();
+            for (iterator iter = graph.adjacencyList(vertex_index).begin(); iter != graph.adjacencyList(vertex_index).end(); ++iter) {
+                if (bfs_set[*iter].color == 'w') {
+                    bfs_set[*iter].color = 'g';
+                    bfs_set[*iter].distance = bfs_set[vertex_index].distance + 1;
+                    bfs_set[*iter].parent = vertex_index;
+                    // enquee into the queue
+                    queue.push(*iter);
+                }
+            }
+            // mark the vertex as finished
+            bfs_set[vertex_index].color = 'b';
+        }
+    }
+
+    void result(bool with_trace = false) const {
+
+        std::cout << std::left << std::setw(10) << "Index" << std::setw(15) << "Vertex"
+                << std::setw(15) << "Parent" << std::setw(10) << "Distance";
+        if (with_trace) {
+            std::cout << "Trace";
+        }
+        std::cout << std::endl;
+
+        for (int i{0}; i < graph.size(); i++) {
+            if (bfs_set[i].parent == -1) {
+                std::cout << std::left << std::setw(10) << i << std::setw(15) 
+                    << graph.get_vertices()[i] << std::setw(15) << "null"
+                    << std::setw(10) << bfs_set[i].distance;
+            } else {
+                std::cout << std::left << std::setw(10) << i << std::setw(15) 
+                    << graph.get_vertices()[i] << std::setw(15) << graph.get_vertices()[bfs_set[i].parent]
+                    << std::setw(10) << bfs_set[i].distance;
+            }
+
+            if (with_trace) {
+                trace(i);
+            }
+            std::cout << std::endl;
+        }
+
+    }
+
+    void trace(int v_index) const {
+        // traverse through the predeccessor graph of the given vertex index
+        // recursively print the predeccessor graph in the console until source is found
+        if (bfs_set[v_index].parent == -1) {
+            std::cout << v_index;
+        } else {
+            trace(bfs_set[v_index].parent);
+            std::cout << " -> " << v_index;
+        }
+    }
+
+
+private:
+
+    struct BFSData
+    {
+        // structure for store the color, parent and the distance from the source to the each nodes
+        char color;
+        int parent;
+        int distance; // distance from the source to the current node
+    } *bfs_set;
+
+    GraphType<T>& graph;
+    
+
+};
+
 
 // wrapper class for implement the DFS traversal on top of the graph
 template<typename T>
@@ -218,13 +263,13 @@ public:
 
         for (int i{0}; i < graph.size(); i++) {
             if (dfs_set[i].parent == -1) {
-                std::cout << std::setw(7) << i << std::setw(15) << graph.get_vertices()[i].data
+                std::cout << std::setw(7) << i << std::setw(15) << graph.get_vertices()[i]
                     << std::setw(15) << "null"
                     << std::setw(8) << dfs_set[i].s_time << std::setw(8)
                     << dfs_set[i].f_time;
             } else {
-                std::cout << std::setw(7) << i << std::setw(15) << graph.get_vertices()[i].data
-                    << std::setw(15) << graph.get_vertices()[dfs_set[i].parent].data
+                std::cout << std::setw(7) << i << std::setw(15) << graph.get_vertices()[i]
+                    << std::setw(15) << graph.get_vertices()[dfs_set[i].parent]
                     << std::setw(8) << dfs_set[i].s_time << std::setw(8)
                     << dfs_set[i].f_time;
             }

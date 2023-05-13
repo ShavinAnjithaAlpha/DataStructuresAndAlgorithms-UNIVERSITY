@@ -11,10 +11,11 @@ int main() {
     
     gr.load(fileName); // load the intgere map data from the data file to the graph
     std::cout << gr; // display the constructed graph
+    std::cout << std::endl;
 
-    // BFS ttraverse the graph
-    gr.BFS(0);
-    gr.bfs_result();
+    Wr_BFS<int> bfs(gr);
+    bfs.BFS(0);
+    bfs.result(true);
 
     std::cout << std::endl;
     // create a wrapper class for perform the DFS traversal
