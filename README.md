@@ -11,7 +11,7 @@
 - [x] Insertion-Sort
 - [x] Merge-Sort
 - [x] Quick-Sort
-- [ ] Heap Sort
+- [x] Heap Sort
 - [ ] Bucket Sort
 - [ ] Radix Sort
 
@@ -28,8 +28,9 @@
   - [x] DSW Binary Search Tree
   - [ ] AVL Tree
   - [ ] Red-Black Binary Search Tree
+- [ ] Hash Table
 - [ ] Multiway Tree
-- [ ] Graph
+- [x] Graph
 
 ### Build With
 
