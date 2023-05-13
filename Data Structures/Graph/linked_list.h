@@ -17,6 +17,46 @@ public:
 template<typename T>
 class LinkedList {
 
+    class iterator {
+        public:
+            // default constructor
+            iterator() : current{nullptr} {}
+            // explicit one parameter constructor
+            explicit iterator(const Node<T> *current) : current{current} {}
+
+            Node<T>& operator*() {
+                // overloasded dereferencing operator
+                // return the current node reference as lvalue
+                return *current;
+            }
+
+            LinkedList::iterator& operator++() {
+                // overloaded pre increment operator
+                // advance the current node to the next node in the linked list
+                current = current->next;
+                return *this;
+            }
+
+            LinkedList::iterator& operator++(int i) {
+                // obverloaded post increment operator
+                // advance the current node to the next node in the linked list
+                current = current->next;
+                return *this;
+            }
+
+            bool operator==(const LinkedList::iterator& right) const {
+                return current == right.current;
+            }
+
+            bool operator!=(const LinkedList::iterator& right) const {
+                return current != right.current;
+            }
+
+
+        private:    
+            Node<T> *current;
+    };
+
     friend std::ostream& operator<<(std::ostream& out, const LinkedList<T>& list) {
 
         for (Node<T> *currentNode{list.first}; currentNode != nullptr; currentNode = currentNode->next) {
@@ -170,6 +210,17 @@ public:
         }
         return *currentNode;
 
+    }
+
+    // iterator methods
+    LinkedList::iterator begin() const {
+        // return the iterator object points to first element of the list
+        return LinkedList::iterator(first);
+    }
+
+    LinkedList::iterator end() const {
+        // return the iterator points to null pointer as indication of the list
+        return LinkedList::iterator();
     }
 
 private:
