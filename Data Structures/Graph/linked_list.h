@@ -12,22 +12,35 @@ public:
 
     T data;
     Node *next;
+
 };
 
 template<typename T>
 class LinkedList {
+
+
+    friend std::ostream& operator<<(std::ostream& out, const LinkedList<T>& list) {
+
+        for (Node<T> *currentNode{list.first}; currentNode != nullptr; currentNode = currentNode->next) {
+            out << currentNode->data << " ";
+        }
+        out << std::endl;
+        return out;
+    }
+
+public:
 
     class iterator {
         public:
             // default constructor
             iterator() : current{nullptr} {}
             // explicit one parameter constructor
-            explicit iterator(const Node<T> *current) : current{current} {}
+            explicit iterator(Node<T> *current) : current{current} {}
 
-            Node<T>& operator*() {
+            T operator*() {
                 // overloasded dereferencing operator
                 // return the current node reference as lvalue
-                return *current;
+                return current->data;
             }
 
             LinkedList::iterator& operator++() {
@@ -56,17 +69,6 @@ class LinkedList {
         private:    
             Node<T> *current;
     };
-
-    friend std::ostream& operator<<(std::ostream& out, const LinkedList<T>& list) {
-
-        for (Node<T> *currentNode{list.first}; currentNode != nullptr; currentNode = currentNode->next) {
-            out << currentNode->data << " ";
-        }
-        out << std::endl;
-        return out;
-    }
-
-public:
 
     // constructors
     LinkedList() : first{nullptr}, last{nullptr}, length{0} {}

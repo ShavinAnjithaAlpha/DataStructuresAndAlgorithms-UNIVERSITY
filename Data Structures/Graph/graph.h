@@ -1,9 +1,23 @@
 #pragma one
 
 #include<iostream>
+#include<iomanip>
 #include<stdexcept>
 #include<fstream>
+#include<queue>
 #include"linked_list.h"
+
+typedef LinkedList<int>::iterator iterator;
+
+template<typename T>
+struct Vertex {
+    // structure for store the vertex actual data and addtional data needed by the graph algorithms
+    T data;
+    // addiotional fields for implement the traversal algorithms
+    char color; // color to identify the nodes whether nodes are discovered, reached out or finished
+    int distance;   // distance from the source vertex;
+    Vertex<T> *parent; // parent vertex pointer which adjacent to the current vertex
+};
 
 template<typename T>
 class GraphType {
@@ -11,7 +25,7 @@ class GraphType {
     friend std::ostream& operator<<(std::ostream& out, const GraphType<T>& graph) {
 
         for (int i{0}; i < graph.g_size; i++) {
-            out << i << "(" << graph.vertices[i] << ") -> ";
+            out << i << "(" << graph.vertices[i].data << ") -> ";
             out << graph.adjacencyLists[i];
         }
         return out;
@@ -20,12 +34,12 @@ class GraphType {
 public:
     // constructors
     GraphType() 
-        : max_size{50}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
+        : max_size{50}, g_size{0}, vertices{new Vertex<T>[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
             // empty list
         }
 
     explicit GraphType(size_t max_size) 
-        : max_size{max_size}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
+        : max_size{max_size}, g_size{0}, vertices{new Vertex<T>[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
             // empty body
         }
 
@@ -74,7 +88,7 @@ public:
             infile >> vertex;
             infile >> adjacencyVertexIndex;
 
-            vertices[i] = vertex;
+            vertices[i] = {vertex};
             while (adjacencyVertexIndex != -1) {
 
                 adjacencyLists[i].insert_last(adjacencyVertexIndex);
@@ -87,13 +101,64 @@ public:
 
     }
 
-    
+    // traversal algorithms for graphs
+    void BFS(const T& source) {
+        int source_index = find_index(source);
+        // mark all the vertex as white, distance as zero and parent to null 
+        for (int i{0}; i < g_size; i++) {
+            vertices[i].color = 'w'; // indicate that this vertex is not yet discovered
+            vertices[i].distance = -1; // indicate that distance from the source is not set
+            vertices[i].parent = nullptr;
+        }
+        vertices[source_index].color = 'g';
+        vertices[source_index].distance = 0;
+        std::queue<int> queue;
+        queue.push(source_index);
+        // run the while loop until queue is empty
+        while (!queue.empty()) {
+            int vertex_index = queue.front();
+            queue.pop();
+            for (iterator iter = adjacencyLists[vertex_index].begin(); iter != adjacencyLists[vertex_index].end(); ++iter) {
+                if (vertices[*iter].color == 'w') {
+                    vertices[*iter].color = 'g';
+                    vertices[*iter].distance = vertices[vertex_index].distance + 1;
+                    vertices[*iter].parent = (vertices + vertex_index);
+                    // enquee into the queue
+                    queue.push(*iter);
+                }
+            }
+            // mark the vertex as finished
+            vertices[vertex_index].color = 'b';
+        }
+    }
+
+    void bfs_result() const {
+
+        std::cout << std::left << std::setw(10) << "Index" << std::setw(15) << "Vertex"
+                << std::setw(10) << "Distance" << std::endl;
+        for (int i{0}; i < g_size; i++) {
+            std::cout << std::left << std::setw(10) << i << std::setw(15) << vertices[i].data
+                    << std::setw(10) << vertices[i].distance << std::endl;
+        }
+
+    }
 
 private:
 
+    // helper function for find the index of the given vertex data
+    int find_index(const T& data) const {
+        for (int i{0}; i < g_size; i++) {
+            if (vertices[i].data == data) {
+                return i;
+            }
+        }
+        return -1; // indicate that the given data is not found
+    }
+
+
     size_t max_size;    // maximum number of nodes graph hold
     size_t g_size; // current graph size - number of current nodes
-    T *vertices; // vertices data array
+    Vertex<T> *vertices; // vertices data array
     LinkedList<int>* adjacencyLists;  // array of adjacancy list of arrays
 
 };
