@@ -16,4 +16,11 @@ int main() {
     gr.BFS(0);
     gr.bfs_result();
 
+    std::cout << std::endl;
+    // create a wrapper class for perform the DFS traversal
+    Wr_DFS<int> dfs(gr);
+    dfs.DFS();
+    dfs.result(true);
+
+
 }
