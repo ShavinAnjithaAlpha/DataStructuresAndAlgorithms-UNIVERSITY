@@ -7,7 +7,18 @@
 #include<queue>
 #include"linked_list.h"
 
-typedef LinkedList<int>::iterator iterator;
+struct Edge {
+
+    Edge(int vertex, float weight = 1) {
+        dest = vertex;
+        this->weight = weight;
+    }
+
+    int dest;
+    float weight;
+}; // to represent the edge and its associtaed weight
+
+typedef LinkedList<Edge>::iterator iterator;
 
 template<typename T>
 class GraphType {
@@ -24,12 +35,12 @@ class GraphType {
 public:
     // constructors
     GraphType() 
-        : max_size{50}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
+        : max_size{50}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<Edge>[max_size]} {
             // empty list
         }
 
     explicit GraphType(size_t max_size) 
-        : max_size{max_size}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<int>[max_size]} {
+        : max_size{max_size}, g_size{0}, vertices{new T[max_size]}, adjacencyLists{new LinkedList<Edge>[max_size]} {
             // empty body
         }
 
@@ -59,7 +70,7 @@ public:
         return g_size;
     }
 
-    LinkedList<int>& adjacencyList(int adj_index) {
+    LinkedList<Edge>& adjacencyList(int adj_index) {
         return adjacencyLists[adj_index];
     }
 
@@ -68,7 +79,7 @@ public:
     }
 
     // function to load the graph froma file
-    void load(const char* fileName) {
+    void virtual load(const char* fileName) {
 
         // if graph is not empty clear the graph
         if (!empty()) clear();
@@ -93,8 +104,43 @@ public:
             vertices[i] = vertex;
             while (adjacencyVertexIndex != -1) {
 
-                adjacencyLists[i].insert_last(adjacencyVertexIndex);
+                adjacencyLists[i].insert_last({adjacencyVertexIndex});
                 infile >> adjacencyVertexIndex; 
+
+            } // end of whilw
+        } // end of for
+        // close the file stream
+        infile.close();
+
+    }
+
+    void virtual load_with_weights(const char* fileName) {
+
+        std::ifstream infile;
+        infile.open(fileName);
+
+        if (!infile) {
+            throw std::invalid_argument("file is not found");
+        }
+
+        T vertex;
+        int adjacencyVertexIndex;
+        flost weight;
+
+        infile >> g_size;
+        for (int i{0}; i < g_size; i++) {
+
+            // read the first vertex of the adjacency list
+            infile >> vertex;
+            infile >> adjacencyVertexIndex;
+            infile >> weight
+
+            vertices[i] = vertex;
+            while (adjacencyVertexIndex != -1) {
+
+                adjacencyLists[i].insert_last({adjacencyVertexIndex, weight});
+                infile >> adjacencyVertexIndex; 
+                infile >> weight;
 
             } // end of whilw
         } // end of for
@@ -114,17 +160,17 @@ public:
     }
 
 private:
-
+    // empty
 protected:
     size_t max_size;    // maximum number of nodes graph hold
     size_t g_size; // current graph size - number of current nodes
     T *vertices; // vertices data array
-    LinkedList<int>* adjacencyLists;  // array of adjacancy list of arrays
+    LinkedList<Edge>* adjacencyLists;  // array of adjacancy list of arrays
 
 };
 
 // wrapper class for implement the BFS traversal on top of the graph
-template<typename T>
+template<typename T, typename W = int>
 class Wr_BFS {
 public:
     // there is no default constructor for this class
@@ -140,6 +186,8 @@ public:
     // BFS traversal algorithm
     // traversal algorithms for graphs
     void BFS(const T& source) {
+        // using iterator = LinkedList<Edge<T>>::iterator
+
         int source_index = graph.find_index(source);
         
         bfs_set[source_index].color = 'g';
@@ -151,12 +199,12 @@ public:
             int vertex_index = queue.front();
             queue.pop();
             for (iterator iter = graph.adjacencyList(vertex_index).begin(); iter != graph.adjacencyList(vertex_index).end(); ++iter) {
-                if (bfs_set[*iter].color == 'w') {
-                    bfs_set[*iter].color = 'g';
-                    bfs_set[*iter].distance = bfs_set[vertex_index].distance + 1;
-                    bfs_set[*iter].parent = vertex_index;
+                if (bfs_set[(*iter).dest].color == 'w') {
+                    bfs_set[(*iter).dest].color = 'g';
+                    bfs_set[(*iter).dest].distance = bfs_set[vertex_index].distance + 1;
+                    bfs_set[(*iter).dest].parent = vertex_index;
                     // enquee into the queue
-                    queue.push(*iter);
+                    queue.push((*iter).dest);
                 }
             }
             // mark the vertex as finished
@@ -221,7 +269,7 @@ private:
 
 
 // wrapper class for implement the DFS traversal on top of the graph
-template<typename T>
+template<typename T, typename W = int>
 class Wr_DFS {
 public:
     // there is not deafult constructor for Wr_DFS 
@@ -303,9 +351,9 @@ private:
         dfs_set[v_index].color = 'g';
         // traverse through the adjacency list of the source vertex
         for (iterator iter{graph.adjacencyList(v_index).begin()}; iter != graph.adjacencyList(v_index).end(); ++iter) {
-            if (dfs_set[*iter].color == 'w') {
-                dfs_set[*iter].parent = v_index; // set the parent vertex as the source vertex
-                dfs_helper(*iter);
+            if (dfs_set[(*iter).dest].color == 'w') {
+                dfs_set[(*iter).dest].parent = v_index; // set the parent vertex as the source vertex
+                dfs_helper((*iter).dest);
             }
         }
         dfs_set[v_index].color = 'b'; // mark as the finished node

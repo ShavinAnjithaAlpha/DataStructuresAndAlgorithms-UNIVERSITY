@@ -22,7 +22,7 @@ class LinkedList {
     friend std::ostream& operator<<(std::ostream& out, const LinkedList<T>& list) {
 
         for (Node<T> *currentNode{list.first}; currentNode != nullptr; currentNode = currentNode->next) {
-            out << currentNode->data << " ";
+            out << (currentNode->data).dest << " ";
         }
         out << std::endl;
         return out;
