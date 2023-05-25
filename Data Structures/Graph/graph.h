@@ -19,18 +19,6 @@ struct Edge {
 }; // to represent the edge and its associtaed weight
 
 typedef LinkedList<Edge>::iterator iterator;
-struct Edge {
-
-    Edge(int vertex, float weight = 1) {
-        dest = vertex;
-        this->weight = weight;
-    }
-
-    int dest;
-    float weight;
-}; // to represent the edge and its associtaed weight
-
-typedef LinkedList<Edge>::iterator iterator;
 
 template<typename T>
 class GraphType {
@@ -83,7 +71,6 @@ public:
     }
 
     LinkedList<Edge>& adjacencyList(int adj_index) {
-    LinkedList<Edge>& adjacencyList(int adj_index) {
         return adjacencyLists[adj_index];
     }
 
@@ -92,7 +79,6 @@ public:
     }
 
     // function to load the graph froma file
-    void virtual load(const char* fileName) {
     void virtual load(const char* fileName) {
 
         // if graph is not empty clear the graph
@@ -176,7 +162,6 @@ public:
 
 private:
     // empty
-    // empty
 protected:
     size_t max_size;    // maximum number of nodes graph hold
     size_t g_size; // current graph size - number of current nodes
@@ -186,7 +171,6 @@ protected:
 };
 
 // wrapper class for implement the BFS traversal on top of the graph
-template<typename T, typename W = int>
 template<typename T, typename W = int>
 class Wr_BFS {
 public:
@@ -218,10 +202,6 @@ public:
             int vertex_index = queue.front();
             queue.pop();
             for (iterator iter = graph.adjacencyList(vertex_index).begin(); iter != graph.adjacencyList(vertex_index).end(); ++iter) {
-                if (bfs_set[(*iter).dest].color == 'w') {
-                    bfs_set[(*iter).dest].color = 'g';
-                    bfs_set[(*iter).dest].distance = bfs_set[vertex_index].distance + 1;
-                    bfs_set[(*iter).dest].parent = vertex_index;
                 if (bfs_set[(*iter).dest].color == 'w') {
                     bfs_set[(*iter).dest].color = 'g';
                     bfs_set[(*iter).dest].distance = bfs_set[vertex_index].distance + 1;
@@ -293,7 +273,6 @@ private:
 
 
 // wrapper class for implement the DFS traversal on top of the graph
-template<typename T, typename W = int>
 template<typename T, typename W = int>
 class Wr_DFS {
 public:
@@ -376,9 +355,6 @@ private:
         dfs_set[v_index].color = 'g';
         // traverse through the adjacency list of the source vertex
         for (iterator iter{graph.adjacencyList(v_index).begin()}; iter != graph.adjacencyList(v_index).end(); ++iter) {
-            if (dfs_set[(*iter).dest].color == 'w') {
-                dfs_set[(*iter).dest].parent = v_index; // set the parent vertex as the source vertex
-                dfs_helper((*iter).dest);
             if (dfs_set[(*iter).dest].color == 'w') {
                 dfs_set[(*iter).dest].parent = v_index; // set the parent vertex as the source vertex
                 dfs_helper((*iter).dest);
