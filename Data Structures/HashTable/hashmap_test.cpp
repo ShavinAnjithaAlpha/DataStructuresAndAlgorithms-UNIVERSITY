@@ -1,32 +1,16 @@
 #include<iostream>  
-
-struct Node {
-    int x;
-    int y;
-};
-
-class Object {
-public:
-    Object() {
-        arr = new Node[10];
-    }
-
-    Node* arr;
-};
+#include "hashtable.h"
 
 int main() {
 
-    Node arr[5] {5, 7};
-    for (int i{0}; i < 5; i++) {
-        std::cout << arr[i].x << std::endl;
-        std::cout << arr[i].y << std::endl << std::endl;
-    }
+    HashMap<int> map;
+    map.insert("shavin", 12);
+    map.insert("Omalya", 44);
+    map.insert("reshani", 45);
+    map.insert("pytha", 123);
+    map.insert("shyamal", 8);
+    map.insert("kasun", 78);
 
-    Object obj;
-    for (int i{0}; i < 10; i++) {
-        std::cout << obj.arr[i].x << std::endl;
-    }
-
+    std::cout << map;
     return 0;
-
 }
