@@ -14,6 +14,7 @@ void initialize_single_source(Vertex* vertices, int source);
 void dijkstra(Vertex* vertices, int graph[][N], int source);
 void relax(Vertex* vertices, int u, int v, int weight);
 void print_distances(const Vertex* vertices, int exclude_node);
+void print_trace(const Vertex* vertices, int vertex);
 int extract_min(const Vertex* vertices);
 bool empty(const Vertex* vertices);
 
@@ -30,7 +31,7 @@ int main() {
         {5, 0, 0, 20, 0, 0}
     };
 
-    int source_node{0}; // starting source node
+    int source_node{5}; // starting source node
     dijkstra(vertices, graph, source_node);
     print_distances(vertices, source_node); // print the output of the SSSP
 
@@ -43,6 +44,18 @@ void print_distances(const Vertex* vertices, int exclude_vertex) {
     for (int i{0}; i < N; i++) {
         if (i == exclude_vertex) continue;
         cout << "Distance of node" << i << "=" << vertices[i].distance << endl;
+        cout << "Path=";
+        print_trace(vertices, i);
+        cout << endl;
+    }
+
+}
+
+void print_trace(const Vertex* vertices, int vertex) {
+
+    cout << vertex << " ";
+    if (vertices[vertex].parent != -1) {
+        print_trace(vertices, vertices[vertex].parent);
     }
 
 }
@@ -88,7 +101,7 @@ bool empty(const Vertex* vertices) {
 int extract_min(const Vertex* vertices) {
 
     int min_index;
-    int min{INT32_MIN};
+    int min{INT32_MAX};
     for (int i{0}; i < N; i++) {
         if (vertices[i].status && min > vertices[i].distance) {
             min = vertices[i].distance;
